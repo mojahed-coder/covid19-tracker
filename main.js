@@ -3,7 +3,7 @@
 
 
 var request = new XMLHttpRequest();
-request.open('GET', 'https://api.apify.com/v2/key-value-stores/tVaYRsPHLjNdNBu7S/records/LATEST?disableRedirect=true', true);
+request.open('GET', 'https://www.trackcorona.live/api/countries', true);
 
 function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -12,27 +12,20 @@ function formatNumber(num) {
 request.onload = function() {
   var data = JSON.parse(this.response);
 
-  var total_deceased = 0;
+  var total_death = 0;
   var total_recovered = 0;
-  var total_infected = 0;
+  var total_confirmed = 0;
 
   let table  = document.querySelector("table");
-
-
-  for (var i = 0; i < data.length; i++) {
-    if (typeof(data[i].deceased) === 'number') {
-      total_deceased += data[i].deceased;
-    }
-    if (typeof(data[i].recovered) === 'number') {
-      total_recovered += data[i].recovered;
-    }
-    if (typeof(data[i].infected) === 'number') {
-      total_infected += data[i].infected;
-    }
-
-    
-
-    var output = [data[i].country, data[i].infected, data[i].recovered, data[i].deceased];
+console.log(data.data.length);
+  
+  for (let i = 0; i < data.data.length; i++) {
+    total_confirmed += data.data[i].confirmed;
+    total_recovered += data.data[i].recovered;
+    total_death += data.data[i].dead;
+    console.log("country: ", i);
+   
+    var output = [data.data[i].location, data.data[i].confirmed, data.data[i].recovered, data.data[i].dead];
 
     let row = table.insertRow();
 
@@ -45,14 +38,12 @@ request.onload = function() {
     
   }
 
-  
-  console.log(formatNumber(total_deceased));
-  console.log(formatNumber(total_infected));
-  console.log(formatNumber(total_recovered));
+ console.log(total_confirmed);
 
-  document.querySelector("#confirmed").append(formatNumber(total_infected));
+  document.querySelector("#confirmed").append(formatNumber(total_confirmed));
   document.querySelector("#recovered").append(formatNumber(total_recovered));
-  document.querySelector("#deceased").append(formatNumber(total_deceased));
+  document.querySelector("#deceased").append(formatNumber(total_death));
+  
   
 }
 
@@ -86,7 +77,7 @@ function generateTable(table, data) {
 
 
 
-
+/*
   axios({
     method: 'get',
     url: 'https://www.trackcorona.live/api/countries',
@@ -99,4 +90,4 @@ function generateTable(table, data) {
     }
   })
   .catch(err => console.log(err));
-
+*/
